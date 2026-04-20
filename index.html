@@ -13,6 +13,7 @@
     --success-bg: #f0fdf4; --success-border: #86efac; --success-text: #15803d;
     --info-bg: #eff6ff; --info-border: #93c5fd; --info-text: #1d4ed8;
     --danger-bg: #fef2f2; --danger-border: #fca5a5; --danger-text: #dc2626;
+    --warn-bg: #fffbeb; --warn-border: #fcd34d; --warn-text: #b45309;
     --radius: 8px; --radius-lg: 12px;
   }
   @media (prefers-color-scheme: dark) {
@@ -23,29 +24,47 @@
       --success-bg: #052e16; --success-border: #166534; --success-text: #86efac;
       --info-bg: #1e3a5f; --info-border: #1d4ed8; --info-text: #93c5fd;
       --danger-bg: #3b0a0a; --danger-border: #991b1b; --danger-text: #fca5a5;
+      --warn-bg: #2d1a00; --warn-border: #b45309; --warn-text: #fcd34d;
     }
   }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: var(--text); background: var(--bg3); min-height: 100vh; }
+
+  /* LOGIN */
+  .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg3); }
+  .login-box { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 2rem; width: min(380px, 92vw); }
+  .login-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 0.25rem; }
+  .login-box p { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; }
+  .login-box label { display: block; font-size: 12px; color: var(--text2); font-weight: 500; margin-bottom: 4px; }
+  .login-box input { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 14px; outline: none; margin-bottom: 0.75rem; }
+  .login-box input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  .login-error { font-size: 12px; color: var(--danger-text); margin-bottom: 0.75rem; display: none; }
+  .login-error.show { display: block; }
 
   /* HEADER */
   header { background: var(--bg); border-bottom: 0.5px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; gap: 12px; height: 56px; position: sticky; top: 0; z-index: 50; }
   .logo { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
   .logo span { color: var(--text2); font-weight: 400; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--bg3); flex-shrink: 0; }
-  .dot.live { background: #22c55e; }
-  .dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
-  .dot.error { background: #ef4444; }
+  .hdot { width: 7px; height: 7px; border-radius: 50%; background: var(--bg3); flex-shrink: 0; }
+  .hdot.live { background: #22c55e; }
+  .hdot.loading { background: #f59e0b; animation: pulse 1s infinite; }
+  .hdot.error { background: #ef4444; }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
   #statusTxt { font-size: 12px; color: var(--text2); }
   header .spacer { flex: 1; }
+  .logout-btn { font-size: 12px; color: var(--text2); background: none; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 4px 10px; cursor: pointer; }
+  .logout-btn:hover { background: var(--bg2); }
 
   /* MAIN */
-  main { max-width: 1300px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
+  main { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
 
   /* STATS */
   .stats { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
   .stat { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 16px; font-size: 12px; color: var(--text2); }
   .stat strong { display: block; font-size: 20px; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .stat.warn { border-color: var(--warn-border); background: var(--warn-bg); }
+  .stat.warn strong { color: var(--warn-text); }
+  .stat.danger { border-color: var(--danger-border); background: var(--danger-bg); }
+  .stat.danger strong { color: var(--danger-text); }
 
   /* TOOLBAR */
   .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem; flex-wrap: wrap; }
@@ -59,18 +78,32 @@
   .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
   .btn.primary:hover { opacity: 0.85; }
 
+  /* FILTER CHIPS */
+  .filter-bar { display: flex; gap: 6px; margin-bottom: 0.75rem; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
+  .chip { height: 28px; padding: 0 12px; border: 0.5px solid var(--border2); border-radius: 99px; background: var(--bg); color: var(--text2); font-size: 12px; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; transition: all .15s; }
+  .chip:hover { background: var(--bg2); color: var(--text); }
+  .chip.active { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); font-weight: 500; }
+  .chip.sel { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); font-weight: 500; }
+
   /* TABLE */
   .table-wrap { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 980px; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; min-width: 1100px; font-size: 13px; }
   thead { background: var(--bg2); }
-  th { padding: 10px 12px; text-align: left; font-weight: 500; font-size: 11px; color: var(--text2); border-bottom: 0.5px solid var(--border); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.4px; }
+  th { padding: 10px 12px; text-align: left; font-weight: 500; font-size: 11px; color: var(--text2); border-bottom: 0.5px solid var(--border); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.4px; cursor: pointer; user-select: none; }
+  th:hover { color: var(--text); }
   td { padding: 9px 12px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: var(--bg2); }
   .col-no { width: 36px; color: var(--text3); font-size: 12px; }
   .app-name { font-weight: 500; }
-  .muted { color: var(--text2); font-size: 12px; max-width: 180px; }
+  .muted { color: var(--text2); font-size: 12px; }
   .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--info-bg); color: var(--info-text); border: 0.5px solid var(--info-border); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sbadge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .s-active { background: var(--success-bg); color: var(--success-text); border: 0.5px solid var(--success-border); }
+  .s-inactive { background: var(--bg2); color: var(--text3); border: 0.5px solid var(--border); }
+  .s-review { background: var(--warn-bg); color: var(--warn-text); border: 0.5px solid var(--warn-border); }
+  .s-deprecated { background: var(--danger-bg); color: var(--danger-text); border: 0.5px solid var(--danger-border); }
 
   /* TOGGLE */
   .toggle { width: 24px; height: 24px; border-radius: 6px; border: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; transition: background .15s, opacity .15s; }
@@ -85,7 +118,6 @@
   .del-btn { height: 28px; padding: 0 10px; font-size: 12px; border: 0.5px solid var(--danger-border); border-radius: 6px; background: var(--bg); color: var(--danger-text); cursor: pointer; }
   .del-btn:hover { background: var(--danger-bg); }
 
-  /* EMPTY / LOADING */
   .empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 13px; }
   .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--text); border-radius: 50%; animation: spin .6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -93,87 +125,103 @@
   /* MODAL */
   .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
   .overlay.open { display: flex; }
-  .modal { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1.5rem; width: min(520px, 100%); max-height: 90vh; overflow-y: auto; }
+  .modal { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1.5rem; width: min(560px, 100%); max-height: 90vh; overflow-y: auto; }
   .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
   .modal-header h3 { font-size: 15px; font-weight: 600; }
   .close-btn { width: 28px; height: 28px; border: none; background: none; cursor: pointer; color: var(--text2); font-size: 18px; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
   .close-btn:hover { background: var(--bg2); }
   .field { margin-bottom: 0.875rem; }
   .field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px; font-weight: 500; }
-  .field input, .field textarea { width: 100%; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; outline: none; }
-  .field input:focus, .field textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  .field input, .field textarea, .field select { width: 100%; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; outline: none; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
   .field textarea { resize: vertical; min-height: 64px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .checks-section { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px; }
-  .checks-section label.section-label { display: block; font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .checks-section .slabel { display: block; font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
   .checks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .check-field { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 4px 6px; border-radius: 6px; }
   .check-field:hover { background: var(--bg2); }
   .check-field input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: #3b82f6; }
   .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.25rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
 
-  /* TOAST */
   .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: var(--radius); font-size: 13px; z-index: 300; opacity: 0; transform: translateY(8px); transition: opacity .2s, transform .2s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 600px) {
-    main { padding: 1rem; }
-    header { padding: 0 1rem; }
-    .checks-grid { grid-template-columns: 1fr; }
+    main { padding: 1rem; } header { padding: 0 1rem; }
+    .checks-grid, .form-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h2>MIS Tracker</h2>
+    <p>Enter your team password to continue</p>
+    <label>Password</label>
+    <input type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+    <button class="btn primary" style="width:100%;justify-content:center" onclick="doLogin()">Sign in</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" style="display:none">
 <header>
   <div class="logo">MIS <span>Tracker</span></div>
-  <div class="dot loading" id="dot"></div>
+  <div class="hdot loading" id="dot"></div>
   <span id="statusTxt">Connecting...</span>
   <div class="spacer"></div>
+  <button class="logout-btn" onclick="doLogout()">Sign out</button>
 </header>
 
 <main>
-  <div class="stats" id="stats">
-    <div class="stat"><strong>—</strong> Total apps</div>
-  </div>
+  <div class="stats" id="stats"><div class="stat"><strong>—</strong> Total apps</div></div>
 
   <div class="toolbar">
     <div class="search-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" id="search" placeholder="Search by name, users, manager..." oninput="render()">
     </div>
-    <button class="btn" onclick="loadData()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-      Refresh
-    </button>
+    <button class="btn" onclick="loadData()">&#8635; Refresh</button>
     <button class="btn primary" onclick="openModal()">+ Add App</button>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <div class="chip sel" id="chip-all" onclick="setFilter('all')">All apps</div>
+    <div class="chip" id="chip-no2fa" onclick="setFilter('no2fa')">Missing 2FA</div>
+    <div class="chip" id="chip-nosso" onclick="setFilter('nosso')">Missing SSO</div>
+    <div class="chip" id="chip-noticket" onclick="setFilter('noticket')">No Ticket Support</div>
+    <div class="chip" id="chip-nomanual" onclick="setFilter('nomanual')">No User Manual</div>
+    <div class="chip" id="chip-nofaq" onclick="setFilter('nofaq')">No FAQ</div>
+    <div class="chip" id="chip-review" onclick="setFilter('review')">Needs Review</div>
+    <div class="chip" id="chip-inactive" onclick="setFilter('inactive')">Inactive / Deprecated</div>
   </div>
 
   <div class="table-wrap">
     <table>
-      <thead>
-        <tr>
-          <th class="col-no">#</th>
-          <th>MIS Name</th>
-          <th>Description</th>
-          <th>Users</th>
-          <th>Managed By</th>
-          <th>Ticket</th>
-          <th>2FA</th>
-          <th>SSO</th>
-          <th>Manual</th>
-          <th>Admin</th>
-          <th>FAQ</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <tr><td colspan="12" class="empty"><span class="spinner"></span></td></tr>
-      </tbody>
+      <thead><tr>
+        <th class="col-no">#</th>
+        <th onclick="sortBy('MIS Name')">MIS Name</th>
+        <th>Description</th>
+        <th>Users</th>
+        <th>Managed By</th>
+        <th onclick="sortBy('Status')">Status</th>
+        <th onclick="sortBy('Go Live Date')">Go Live</th>
+        <th onclick="sortBy('Last Reviewed')">Last Reviewed</th>
+        <th>Ticket</th><th>2FA</th><th>SSO</th><th>Manual</th><th>Admin</th><th>FAQ</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="tbody"><tr><td colspan="15" class="empty"><span class="spinner"></span></td></tr></tbody>
     </table>
   </div>
 </main>
+</div>
 
-<!-- Modal -->
+<!-- MODAL -->
 <div class="overlay" id="overlay">
   <div class="modal">
     <div class="modal-header">
@@ -184,9 +232,21 @@
     <div class="field"><label>Description</label><textarea id="fDesc" placeholder="What does this app do?"></textarea></div>
     <div class="field"><label>Users</label><input id="fUsers" placeholder="e.g. Creche Initiatives (#1500+ creches, 29k kids)"></div>
     <div class="field"><label>Managed By</label><input id="fMgr" placeholder="e.g. Partner: Microware"></div>
+    <div class="form-row">
+      <div class="field"><label>Status</label>
+        <select id="fStatus">
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+          <option value="Needs Review">Needs Review</option>
+          <option value="Deprecated">Deprecated</option>
+        </select>
+      </div>
+      <div class="field"><label>Go Live Date</label><input type="date" id="fGoLive"></div>
+    </div>
+    <div class="field"><label>Last Reviewed</label><input type="date" id="fReviewed"></div>
     <div class="field">
       <div class="checks-section">
-        <label class="section-label">Compliance & Features</label>
+        <span class="slabel">Compliance & Features</span>
         <div class="checks-grid">
           <label class="check-field"><input type="checkbox" id="fTicket"> Ticket Support</label>
           <label class="check-field"><input type="checkbox" id="f2fa"> 2FA</label>
@@ -204,209 +264,205 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzM_EUgCpawJAL6tuH_NDrfXANKKd_HKYn9qTRs0u_z5hzy2bphFmv_TkbO5IKlGgTO/exec";
 const BOOL_KEYS = ["Ticket Support","2FA","SSO","User Manual","User Admin","FAQ"];
+const PASSWORD = "mis@2026"; // Change this to your preferred password
 
-let apps = [];
-let editRow = null;
+let apps=[], editRow=null, activeFilter='all', sortKey=null, sortDir=1;
 
-function setStatus(state, msg) {
-  document.getElementById('dot').className = 'dot ' + state;
-  document.getElementById('statusTxt').textContent = msg;
-}
-
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
-}
-
-function isBool(v) { return v === true || v === 'TRUE' || v === 'Yes' || v === 1; }
-function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-async function loadData() {
-  setStatus('loading', 'Loading...');
-  try {
-    const res = await fetch(API + "?t=" + Date.now());
-    const json = await res.json();
-    if (json.status === 'ok') {
-      apps = json.data;
-      setStatus('live', 'Live · ' + apps.length + ' apps');
-      render();
-    } else {
-      setStatus('error', 'Sheet error');
-    }
-  } catch(e) {
-    setStatus('error', 'Connection failed');
-    document.getElementById('tbody').innerHTML = `<tr><td colspan="12" class="empty">Could not connect to Google Sheet.<br>Check your Apps Script deployment settings.</td></tr>`;
+function doLogin(){
+  if(document.getElementById('pwInput').value===PASSWORD){
+    sessionStorage.setItem('mis_auth','1');
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appScreen').style.display='block';
+    loadData();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwInput').focus();
   }
 }
+function doLogout(){
+  sessionStorage.removeItem('mis_auth');
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('pwInput').value='';
+}
+if(sessionStorage.getItem('mis_auth')==='1'){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  window.addEventListener('load', loadData);
+}
 
-async function apiPost(payload) {
-  const res = await fetch(API, { method: 'POST', body: JSON.stringify(payload) });
+function setStatus(s,m){document.getElementById('dot').className='hdot '+s;document.getElementById('statusTxt').textContent=m;}
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500);}
+function isBool(v){return v===true||v==='TRUE'||v==='Yes'||v===1;}
+function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtDate(v){if(!v||v==='')return '—';const d=new Date(v);if(isNaN(d))return esc(v);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+
+async function loadData(){
+  setStatus('loading','Loading...');
+  try{
+    const res=await fetch(API+"?t="+Date.now());
+    const json=await res.json();
+    if(json.status==='ok'){apps=json.data;setStatus('live','Live · '+apps.length+' apps');render();}
+    else setStatus('error','Sheet error');
+  }catch(e){
+    setStatus('error','Connection failed');
+    document.getElementById('tbody').innerHTML=`<tr><td colspan="15" class="empty">Could not connect to Google Sheet.</td></tr>`;
+  }
+}
+async function apiPost(payload){
+  const res=await fetch(API,{method:'POST',body:JSON.stringify(payload)});
   return await res.json();
 }
 
-function render() {
-  const q = (document.getElementById('search').value || '').toLowerCase();
-  const filtered = apps.filter(a => !q ||
-    [a['MIS Name'], a['Description'], a['Users'], a['Managed By']]
-    .some(v => (v || '').toLowerCase().includes(q))
-  );
+function setFilter(f){
+  activeFilter=f;
+  document.querySelectorAll('.chip').forEach(c=>c.className='chip');
+  const el=document.getElementById('chip-'+f);
+  if(el) el.className=f==='all'?'chip sel':'chip active';
+  render();
+}
 
-  const total = apps.length;
-  const counts = BOOL_KEYS.map(k => apps.filter(a => isBool(a[k])).length);
-  document.getElementById('stats').innerHTML = `
+function applyFilter(list){
+  switch(activeFilter){
+    case 'no2fa':    return list.filter(a=>!isBool(a['2FA']));
+    case 'nosso':    return list.filter(a=>!isBool(a['SSO']));
+    case 'noticket': return list.filter(a=>!isBool(a['Ticket Support']));
+    case 'nomanual': return list.filter(a=>!isBool(a['User Manual']));
+    case 'nofaq':    return list.filter(a=>!isBool(a['FAQ']));
+    case 'review':   return list.filter(a=>a['Status']==='Needs Review');
+    case 'inactive': return list.filter(a=>a['Status']==='Inactive'||a['Status']==='Deprecated');
+    default: return list;
+  }
+}
+
+function sortBy(k){
+  if(sortKey===k)sortDir*=-1; else{sortKey=k;sortDir=1;}
+  render();
+}
+
+function statusBadge(s){
+  if(!s)return '<span class="muted">—</span>';
+  const cls=s==='Active'?'s-active':s==='Inactive'?'s-inactive':s==='Needs Review'?'s-review':'s-deprecated';
+  return `<span class="sbadge ${cls}">${esc(s)}</span>`;
+}
+
+function render(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  let list=apps.filter(a=>!q||[a['MIS Name'],a['Description'],a['Users'],a['Managed By'],a['Status']].some(v=>(v||'').toLowerCase().includes(q)));
+  list=applyFilter(list);
+  if(sortKey) list=[...list].sort((a,b)=>{const av=(a[sortKey]||'').toString().toLowerCase(),bv=(b[sortKey]||'').toString().toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0;});
+
+  const total=apps.length;
+  const c2fa=apps.filter(a=>isBool(a['2FA'])).length;
+  const csso=apps.filter(a=>isBool(a['SSO'])).length;
+  const ctkt=apps.filter(a=>isBool(a['Ticket Support'])).length;
+  const cman=apps.filter(a=>isBool(a['User Manual'])).length;
+  const m2fa=total-c2fa, msso=total-csso;
+
+  document.getElementById('stats').innerHTML=`
     <div class="stat"><strong>${total}</strong> Total Apps</div>
-    <div class="stat"><strong>${counts[1]}/${total}</strong> 2FA Enabled</div>
-    <div class="stat"><strong>${counts[2]}/${total}</strong> SSO Enabled</div>
-    <div class="stat"><strong>${counts[0]}/${total}</strong> Ticket Support</div>
-    <div class="stat"><strong>${counts[3]}/${total}</strong> User Manual</div>
-    <div class="stat"><strong>${counts[5]}/${total}</strong> FAQ</div>
+    <div class="stat"><strong>${c2fa}/${total}</strong> 2FA Enabled</div>
+    <div class="stat"><strong>${csso}/${total}</strong> SSO Enabled</div>
+    <div class="stat"><strong>${ctkt}/${total}</strong> Ticket Support</div>
+    <div class="stat"><strong>${cman}/${total}</strong> User Manual</div>
+    ${m2fa>0?`<div class="stat danger"><strong>${m2fa}</strong> Missing 2FA</div>`:''}
+    ${msso>0?`<div class="stat warn"><strong>${msso}</strong> Missing SSO</div>`:''}
   `;
 
-  if (!filtered.length) {
-    document.getElementById('tbody').innerHTML = `<tr><td colspan="12" class="empty">No apps found</td></tr>`;
-    return;
-  }
+  if(!list.length){document.getElementById('tbody').innerHTML=`<tr><td colspan="15" class="empty">No apps match this filter</td></tr>`;return;}
 
-  document.getElementById('tbody').innerHTML = filtered.map((a, i) => `
-    <tr>
-      <td class="col-no">${i + 1}</td>
-      <td class="app-name">${esc(a['MIS Name']) || '—'}</td>
-      <td class="muted">${esc(a['Description']) || '<span style="color:var(--text3)">—</span>'}</td>
-      <td class="muted" style="max-width:160px">${esc(a['Users']) || '<span style="color:var(--text3)">—</span>'}</td>
-      <td>${a['Managed By'] ? `<span class="tag" title="${esc(a['Managed By'])}">${esc(a['Managed By'])}</span>` : '<span style="color:var(--text3)">—</span>'}</td>
-      ${BOOL_KEYS.map(k => `
-        <td>
-          <div class="toggle ${isBool(a[k]) ? 'yes' : 'no'}"
-               id="t-${a._row}-${k.replace(/\s/g,'_')}"
-               onclick="toggleBool(${a._row},'${k}',this)">
-            ${isBool(a[k]) ? '&#10003;' : ''}
-          </div>
-        </td>`).join('')}
-      <td>
-        <div class="row-actions">
-          <button class="edit-btn" onclick="openModal(${a._row})">Edit</button>
-          <button class="del-btn" onclick="deleteRow(${a._row}, '${esc(a['MIS Name'])}')">Del</button>
-        </div>
-      </td>
-    </tr>`).join('');
+  document.getElementById('tbody').innerHTML=list.map((a,i)=>`
+  <tr>
+    <td class="col-no">${i+1}</td>
+    <td class="app-name">${esc(a['MIS Name'])||'—'}</td>
+    <td class="muted" style="max-width:160px">${esc(a['Description'])||'<span style="color:var(--text3)">—</span>'}</td>
+    <td class="muted" style="max-width:140px">${esc(a['Users'])||'<span style="color:var(--text3)">—</span>'}</td>
+    <td>${a['Managed By']?`<span class="tag" title="${esc(a['Managed By'])}">${esc(a['Managed By'])}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+    <td>${statusBadge(a['Status'])}</td>
+    <td class="muted" style="white-space:nowrap">${fmtDate(a['Go Live Date'])}</td>
+    <td class="muted" style="white-space:nowrap">${fmtDate(a['Last Reviewed'])}</td>
+    ${BOOL_KEYS.map(k=>`<td><div class="toggle ${isBool(a[k])?'yes':'no'}" onclick="toggleBool(${a._row},'${k}',this)">${isBool(a[k])?'&#10003;':''}</div></td>`).join('')}
+    <td><div class="row-actions">
+      <button class="edit-btn" onclick="openModal(${a._row})">Edit</button>
+      <button class="del-btn" onclick="deleteRow(${a._row},'${esc(a['MIS Name'])}')">Del</button>
+    </div></td>
+  </tr>`).join('');
 }
 
-async function toggleBool(rowNum, key, el) {
-  if (el.classList.contains('saving')) return;
-  const a = apps.find(x => x._row === rowNum);
-  if (!a) return;
-  const newVal = !isBool(a[key]);
-  el.classList.add('saving');
-  a[key] = newVal ? 'Yes' : 'No';
-  try {
-    await apiPost({ action: 'update', row: rowNum, data: { [key]: newVal ? 'Yes' : 'No' } });
-    el.className = 'toggle ' + (newVal ? 'yes' : 'no');
-    el.innerHTML = newVal ? '&#10003;' : '';
-    toast((newVal ? '✓ ' : '✗ ') + key + ' updated');
-    render();
-  } catch(e) {
-    a[key] = newVal ? 'No' : 'Yes';
-    el.classList.remove('saving');
-    toast('Failed to update');
-  }
+async function toggleBool(rowNum,key,el){
+  if(el.classList.contains('saving'))return;
+  const a=apps.find(x=>x._row===rowNum);if(!a)return;
+  const nv=!isBool(a[key]);el.classList.add('saving');a[key]=nv?'Yes':'No';
+  try{
+    await apiPost({action:'update',row:rowNum,data:{[key]:nv?'Yes':'No'}});
+    el.className='toggle '+(nv?'yes':'no');el.innerHTML=nv?'&#10003;':'';
+    toast((nv?'✓ ':'✗ ')+key+' updated');render();
+  }catch(e){a[key]=nv?'No':'Yes';el.classList.remove('saving');toast('Failed to update');}
 }
 
-function openModal(rowNum) {
-  editRow = rowNum || null;
-  const a = rowNum ? apps.find(x => x._row === rowNum) : {};
-  document.getElementById('modalTitle').textContent = rowNum ? 'Edit application' : 'Add application';
-  document.getElementById('saveBtn').textContent = rowNum ? 'Update Sheet' : 'Save to Sheet';
-  document.getElementById('fName').value = a['MIS Name'] || '';
-  document.getElementById('fDesc').value = a['Description'] || '';
-  document.getElementById('fUsers').value = a['Users'] || '';
-  document.getElementById('fMgr').value = a['Managed By'] || '';
-  document.getElementById('fTicket').checked = isBool(a['Ticket Support']);
-  document.getElementById('f2fa').checked = isBool(a['2FA']);
-  document.getElementById('fSso').checked = isBool(a['SSO']);
-  document.getElementById('fManual').checked = isBool(a['User Manual']);
-  document.getElementById('fAdmin').checked = isBool(a['User Admin']);
-  document.getElementById('fFaq').checked = isBool(a['FAQ']);
+function openModal(rowNum){
+  editRow=rowNum||null;
+  const a=rowNum?apps.find(x=>x._row===rowNum):{};
+  document.getElementById('modalTitle').textContent=rowNum?'Edit application':'Add application';
+  document.getElementById('saveBtn').textContent=rowNum?'Update Sheet':'Save to Sheet';
+  document.getElementById('fName').value=a['MIS Name']||'';
+  document.getElementById('fDesc').value=a['Description']||'';
+  document.getElementById('fUsers').value=a['Users']||'';
+  document.getElementById('fMgr').value=a['Managed By']||'';
+  document.getElementById('fStatus').value=a['Status']||'Active';
+  document.getElementById('fGoLive').value=a['Go Live Date']||'';
+  document.getElementById('fReviewed').value=a['Last Reviewed']||'';
+  document.getElementById('fTicket').checked=isBool(a['Ticket Support']);
+  document.getElementById('f2fa').checked=isBool(a['2FA']);
+  document.getElementById('fSso').checked=isBool(a['SSO']);
+  document.getElementById('fManual').checked=isBool(a['User Manual']);
+  document.getElementById('fAdmin').checked=isBool(a['User Admin']);
+  document.getElementById('fFaq').checked=isBool(a['FAQ']);
   document.getElementById('overlay').classList.add('open');
-  setTimeout(() => document.getElementById('fName').focus(), 50);
+  setTimeout(()=>document.getElementById('fName').focus(),50);
 }
+function closeModal(){document.getElementById('overlay').classList.remove('open');editRow=null;}
 
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-  editRow = null;
-}
-
-async function saveApp() {
-  const name = document.getElementById('fName').value.trim();
-  if (!name) {
-    document.getElementById('fName').style.borderColor = '#ef4444';
-    document.getElementById('fName').focus();
-    return;
-  }
-  document.getElementById('fName').style.borderColor = '';
-  const saveBtn = document.getElementById('saveBtn');
-  saveBtn.disabled = true;
-  saveBtn.innerHTML = '<span class="spinner"></span>';
-
-  const data = {
-    'MIS Name': name,
-    'Description': document.getElementById('fDesc').value.trim(),
-    'Users': document.getElementById('fUsers').value.trim(),
-    'Managed By': document.getElementById('fMgr').value.trim(),
-    'Ticket Support': document.getElementById('fTicket').checked ? 'Yes' : 'No',
-    '2FA': document.getElementById('f2fa').checked ? 'Yes' : 'No',
-    'SSO': document.getElementById('fSso').checked ? 'Yes' : 'No',
-    'User Manual': document.getElementById('fManual').checked ? 'Yes' : 'No',
-    'User Admin': document.getElementById('fAdmin').checked ? 'Yes' : 'No',
-    'FAQ': document.getElementById('fFaq').checked ? 'Yes' : 'No',
+async function saveApp(){
+  const name=document.getElementById('fName').value.trim();
+  if(!name){document.getElementById('fName').style.borderColor='#ef4444';document.getElementById('fName').focus();return;}
+  document.getElementById('fName').style.borderColor='';
+  const btn=document.getElementById('saveBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  const data={
+    'MIS Name':name,'Description':document.getElementById('fDesc').value.trim(),
+    'Users':document.getElementById('fUsers').value.trim(),'Managed By':document.getElementById('fMgr').value.trim(),
+    'Status':document.getElementById('fStatus').value,'Go Live Date':document.getElementById('fGoLive').value,
+    'Last Reviewed':document.getElementById('fReviewed').value,
+    'Ticket Support':document.getElementById('fTicket').checked?'Yes':'No',
+    '2FA':document.getElementById('f2fa').checked?'Yes':'No','SSO':document.getElementById('fSso').checked?'Yes':'No',
+    'User Manual':document.getElementById('fManual').checked?'Yes':'No',
+    'User Admin':document.getElementById('fAdmin').checked?'Yes':'No',
+    'FAQ':document.getElementById('fFaq').checked?'Yes':'No',
   };
-
-  try {
-    if (editRow) {
-      await apiPost({ action: 'update', row: editRow, data });
-      toast('App updated successfully');
-    } else {
-      await apiPost({ action: 'add', data });
-      toast('App added to Sheet');
-    }
-    closeModal();
-    await loadData();
-  } catch(e) {
-    toast('Failed to save. Try again.');
-  }
-
-  saveBtn.disabled = false;
-  saveBtn.textContent = editRow ? 'Update Sheet' : 'Save to Sheet';
+  try{
+    await apiPost(editRow?{action:'update',row:editRow,data}:{action:'add',data});
+    toast(editRow?'App updated':'App added to Sheet');closeModal();await loadData();
+  }catch(e){toast('Failed to save.');}
+  btn.disabled=false;btn.textContent=editRow?'Update Sheet':'Save to Sheet';
 }
 
-async function deleteRow(rowNum, name) {
-  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
-  try {
-    await apiPost({ action: 'delete', row: rowNum });
-    toast('App deleted');
-    await loadData();
-  } catch(e) {
-    toast('Delete failed.');
-  }
+async function deleteRow(rowNum,name){
+  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+  try{await apiPost({action:'delete',row:rowNum});toast('App deleted');await loadData();}
+  catch(e){toast('Delete failed.');}
 }
 
-document.getElementById('overlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-  if (e.key === 'Enter' && document.getElementById('overlay').classList.contains('open') && e.target.tagName !== 'TEXTAREA') {
-    e.preventDefault();
-    saveApp();
-  }
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if(e.key==='Enter'&&document.getElementById('overlay').classList.contains('open')&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){e.preventDefault();saveApp();}
 });
-
-loadData();
 </script>
 </body>
 </html>
