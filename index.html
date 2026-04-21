@@ -4,152 +4,192 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MIS Tracker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #ffffff; --bg2: #f5f5f4; --bg3: #efefed;
-    --text: #1a1a1a; --text2: #6b6b6b; --text3: #a0a0a0;
-    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.2);
-    --success-bg: #f0fdf4; --success-border: #86efac; --success-text: #15803d;
-    --info-bg: #eff6ff; --info-border: #93c5fd; --info-text: #1d4ed8;
-    --danger-bg: #fef2f2; --danger-border: #fca5a5; --danger-text: #dc2626;
-    --warn-bg: #fffbeb; --warn-border: #fcd34d; --warn-text: #b45309;
-    --radius: 8px; --radius-lg: 12px;
+    --bg:#fff; --bg2:#f5f5f4; --bg3:#efefed;
+    --text:#1a1a1a; --text2:#6b6b6b; --text3:#a0a0a0;
+    --border:rgba(0,0,0,0.12); --border2:rgba(0,0,0,0.2);
+    --success-bg:#f0fdf4; --success-border:#86efac; --success-text:#15803d;
+    --info-bg:#eff6ff; --info-border:#93c5fd; --info-text:#1d4ed8;
+    --danger-bg:#fef2f2; --danger-border:#fca5a5; --danger-text:#dc2626;
+    --warn-bg:#fffbeb; --warn-border:#fcd34d; --warn-text:#b45309;
+    --purple-bg:#f5f3ff; --purple-border:#c4b5fd; --purple-text:#6d28d9;
+    --r:8px; --rl:12px;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1a1a; --bg2: #242424; --bg3: #2e2e2e;
-      --text: #f0f0f0; --text2: #a0a0a0; --text3: #6b6b6b;
-      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
-      --success-bg: #052e16; --success-border: #166534; --success-text: #86efac;
-      --info-bg: #1e3a5f; --info-border: #1d4ed8; --info-text: #93c5fd;
-      --danger-bg: #3b0a0a; --danger-border: #991b1b; --danger-text: #fca5a5;
-      --warn-bg: #2d1a00; --warn-border: #b45309; --warn-text: #fcd34d;
-    }
-  }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: var(--text); background: var(--bg3); min-height: 100vh; }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#1a1a1a; --bg2:#242424; --bg3:#2e2e2e;
+    --text:#f0f0f0; --text2:#a0a0a0; --text3:#6b6b6b;
+    --border:rgba(255,255,255,0.1); --border2:rgba(255,255,255,0.2);
+    --success-bg:#052e16; --success-border:#166534; --success-text:#86efac;
+    --info-bg:#1e3a5f; --info-border:#1d4ed8; --info-text:#93c5fd;
+    --danger-bg:#3b0a0a; --danger-border:#991b1b; --danger-text:#fca5a5;
+    --warn-bg:#2d1a00; --warn-border:#b45309; --warn-text:#fcd34d;
+    --purple-bg:#2e1a4a; --purple-border:#7c3aed; --purple-text:#c4b5fd;
+  }}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:var(--text);background:var(--bg3);min-height:100vh;}
 
   /* LOGIN */
-  .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg3); }
-  .login-box { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 2rem; width: min(380px, 92vw); }
-  .login-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 0.25rem; }
-  .login-box p { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; }
-  .login-box label { display: block; font-size: 12px; color: var(--text2); font-weight: 500; margin-bottom: 4px; }
-  .login-box input { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 14px; outline: none; margin-bottom: 0.75rem; }
-  .login-box input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-  .login-error { font-size: 12px; color: var(--danger-text); margin-bottom: 0.75rem; display: none; }
-  .login-error.show { display: block; }
+  .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+  .login-box{background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--rl);padding:2rem;width:min(380px,92vw);}
+  .login-box h2{font-size:18px;font-weight:600;margin-bottom:4px;}
+  .login-box p{font-size:13px;color:var(--text2);margin-bottom:1.5rem;}
+  .login-box label{display:block;font-size:12px;color:var(--text2);font-weight:500;margin-bottom:4px;}
+  .login-box input{width:100%;padding:9px 12px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:14px;outline:none;margin-bottom:.75rem;}
+  .login-box input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+  .login-error{font-size:12px;color:var(--danger-text);margin-bottom:.75rem;display:none;}
+  .login-error.show{display:block;}
 
   /* HEADER */
-  header { background: var(--bg); border-bottom: 0.5px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; gap: 12px; height: 56px; position: sticky; top: 0; z-index: 50; }
-  .logo { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
-  .logo span { color: var(--text2); font-weight: 400; }
-  .hdot { width: 7px; height: 7px; border-radius: 50%; background: var(--bg3); flex-shrink: 0; }
-  .hdot.live { background: #22c55e; }
-  .hdot.loading { background: #f59e0b; animation: pulse 1s infinite; }
-  .hdot.error { background: #ef4444; }
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-  #statusTxt { font-size: 12px; color: var(--text2); }
-  header .spacer { flex: 1; }
-  .logout-btn { font-size: 12px; color: var(--text2); background: none; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 4px 10px; cursor: pointer; }
-  .logout-btn:hover { background: var(--bg2); }
+  header{background:var(--bg);border-bottom:0.5px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:12px;height:56px;position:sticky;top:0;z-index:50;}
+  .logo{font-size:15px;font-weight:600;letter-spacing:-.3px;}
+  .logo span{color:var(--text2);font-weight:400;}
+  .hdot{width:7px;height:7px;border-radius:50%;background:var(--bg3);flex-shrink:0;}
+  .hdot.live{background:#22c55e;} .hdot.loading{background:#f59e0b;animation:pulse 1s infinite;} .hdot.error{background:#ef4444;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  #statusTxt{font-size:12px;color:var(--text2);}
+  header .spacer{flex:1;}
+  .hbtn{font-size:12px;color:var(--text2);background:none;border:0.5px solid var(--border);border-radius:var(--r);padding:4px 10px;cursor:pointer;}
+  .hbtn:hover{background:var(--bg2);}
 
   /* MAIN */
-  main { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
+  main{max-width:1600px;margin:0 auto;padding:1.25rem 1.5rem 3rem;}
 
   /* STATS */
-  .stats { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
-  .stat { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 16px; font-size: 12px; color: var(--text2); }
-  .stat strong { display: block; font-size: 20px; font-weight: 600; color: var(--text); line-height: 1.2; }
-  .stat.warn { border-color: var(--warn-border); background: var(--warn-bg); }
-  .stat.warn strong { color: var(--warn-text); }
-  .stat.danger { border-color: var(--danger-border); background: var(--danger-bg); }
-  .stat.danger strong { color: var(--danger-text); }
+  .stats{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+  .stat{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 16px;font-size:12px;color:var(--text2);}
+  .stat strong{display:block;font-size:20px;font-weight:600;color:var(--text);line-height:1.2;}
+  .stat.danger{border-color:var(--danger-border);background:var(--danger-bg);}
+  .stat.danger strong{color:var(--danger-text);}
+  .stat.warn{border-color:var(--warn-border);background:var(--warn-bg);}
+  .stat.warn strong{color:var(--warn-text);}
+  .stat.purple{border-color:var(--purple-border);background:var(--purple-bg);}
+  .stat.purple strong{color:var(--purple-text);}
 
   /* TOOLBAR */
-  .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem; flex-wrap: wrap; }
-  .search-wrap { position: relative; flex: 1; min-width: 200px; }
-  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 14px; height: 14px; }
-  .search-wrap input { width: 100%; height: 36px; padding: 0 10px 0 32px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; outline: none; }
-  .search-wrap input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-  .btn { height: 36px; padding: 0 16px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: background .15s; }
-  .btn:hover { background: var(--bg2); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
-  .btn.primary:hover { opacity: 0.85; }
+  .toolbar{display:flex;align-items:center;gap:8px;margin-bottom:.75rem;flex-wrap:wrap;}
+  .search-wrap{position:relative;flex:1;min-width:200px;}
+  .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);width:14px;height:14px;}
+  .search-wrap input{width:100%;height:36px;padding:0 10px 0 32px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;outline:none;}
+  .search-wrap input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+  .btn{height:36px;padding:0 14px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:background .15s;}
+  .btn:hover{background:var(--bg2);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn.primary{background:var(--text);color:var(--bg);border-color:var(--text);}
+  .btn.primary:hover{opacity:.85;}
+  .btn.success{background:var(--success-bg);color:var(--success-text);border-color:var(--success-border);}
+
+  /* EXPORT DROPDOWN */
+  .export-wrap{position:relative;}
+  .export-menu{display:none;position:absolute;top:40px;right:0;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--r);min-width:160px;z-index:30;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.1);}
+  .export-menu.open{display:block;}
+  .export-item{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;cursor:pointer;color:var(--text);}
+  .export-item:hover{background:var(--bg2);}
 
   /* FILTER CHIPS */
-  .filter-bar { display: flex; gap: 6px; margin-bottom: 0.75rem; flex-wrap: wrap; align-items: center; }
-  .filter-label { font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
-  .chip { height: 28px; padding: 0 12px; border: 0.5px solid var(--border2); border-radius: 99px; background: var(--bg); color: var(--text2); font-size: 12px; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; transition: all .15s; }
-  .chip:hover { background: var(--bg2); color: var(--text); }
-  .chip.active { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); font-weight: 500; }
-  .chip.sel { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); font-weight: 500; }
+  .filter-bar{display:flex;gap:6px;margin-bottom:.75rem;flex-wrap:wrap;align-items:center;}
+  .filter-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
+  .chip{height:28px;padding:0 12px;border:0.5px solid var(--border2);border-radius:99px;background:var(--bg);color:var(--text2);font-size:12px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;transition:all .15s;}
+  .chip:hover{background:var(--bg2);color:var(--text);}
+  .chip.sel{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text);font-weight:500;}
+  .chip.active{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger-text);font-weight:500;}
 
   /* TABLE */
-  .table-wrap { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 1100px; font-size: 13px; }
-  thead { background: var(--bg2); }
-  th { padding: 10px 12px; text-align: left; font-weight: 500; font-size: 11px; color: var(--text2); border-bottom: 0.5px solid var(--border); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.4px; cursor: pointer; user-select: none; }
-  th:hover { color: var(--text); }
-  td { padding: 9px 12px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tbody tr:hover td { background: var(--bg2); }
-  .col-no { width: 36px; color: var(--text3); font-size: 12px; }
-  .app-name { font-weight: 500; }
-  .muted { color: var(--text2); font-size: 12px; }
-  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--info-bg); color: var(--info-text); border: 0.5px solid var(--info-border); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sbadge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
-  .s-active { background: var(--success-bg); color: var(--success-text); border: 0.5px solid var(--success-border); }
-  .s-inactive { background: var(--bg2); color: var(--text3); border: 0.5px solid var(--border); }
-  .s-review { background: var(--warn-bg); color: var(--warn-text); border: 0.5px solid var(--warn-border); }
-  .s-deprecated { background: var(--danger-bg); color: var(--danger-text); border: 0.5px solid var(--danger-border); }
-
-  /* TOGGLE */
-  .toggle { width: 24px; height: 24px; border-radius: 6px; border: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; transition: background .15s, opacity .15s; }
-  .toggle.yes { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
-  .toggle.no { background: var(--bg2); color: var(--text3); }
-  .toggle.saving { opacity: 0.4; cursor: wait; pointer-events: none; }
-
-  /* ROW ACTIONS */
-  .row-actions { display: flex; gap: 4px; }
-  .edit-btn { height: 28px; padding: 0 10px; font-size: 12px; border: 0.5px solid var(--border2); border-radius: 6px; background: var(--bg); color: var(--text); cursor: pointer; }
-  .edit-btn:hover { background: var(--bg2); }
-  .del-btn { height: 28px; padding: 0 10px; font-size: 12px; border: 0.5px solid var(--danger-border); border-radius: 6px; background: var(--bg); color: var(--danger-text); cursor: pointer; }
-  .del-btn:hover { background: var(--danger-bg); }
-
-  .empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 13px; }
-  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--text); border-radius: 50%; animation: spin .6s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .table-wrap{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:1400px;font-size:13px;}
+  thead{background:var(--bg2);}
+  th{padding:10px 12px;text-align:left;font-weight:500;font-size:11px;color:var(--text2);border-bottom:0.5px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;user-select:none;}
+  th:hover{color:var(--text);}
+  td{padding:9px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tbody tr:hover td{background:var(--bg2);}
+  .app-name{font-weight:500;}
+  .muted{color:var(--text2);font-size:12px;}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .state-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:99px;background:var(--purple-bg);color:var(--purple-text);border:0.5px solid var(--purple-border);white-space:nowrap;margin:1px 2px 1px 0;}
+  .states-wrap{display:flex;flex-wrap:wrap;gap:2px;max-width:200px;}
+  .sbadge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+  .s-active{background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border);}
+  .s-inactive{background:var(--bg2);color:var(--text3);border:0.5px solid var(--border);}
+  .s-pilot{background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border);}
+  .s-planned{background:var(--warn-bg);color:var(--warn-text);border:0.5px solid var(--warn-border);}
+  .fs-active{background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border);}
+  .fs-inactive{background:var(--bg2);color:var(--text3);border:0.5px solid var(--border);}
+  .fs-pilot{background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border);}
+  .fs-planned{background:var(--warn-bg);color:var(--warn-text);border:0.5px solid var(--warn-border);}
+  .toggle{width:24px;height:24px;border-radius:6px;border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;transition:background .15s,opacity .15s;}
+  .toggle.yes{background:var(--success-bg);border-color:var(--success-border);color:var(--success-text);}
+  .toggle.no{background:var(--bg2);color:var(--text3);}
+  .toggle.saving{opacity:.4;cursor:wait;pointer-events:none;}
+  .num-cell{font-variant-numeric:tabular-nums;font-size:13px;}
+  .row-actions{display:flex;gap:4px;}
+  .edit-btn{height:28px;padding:0 10px;font-size:12px;border:0.5px solid var(--border2);border-radius:6px;background:var(--bg);color:var(--text);cursor:pointer;}
+  .edit-btn:hover{background:var(--bg2);}
+  .del-btn{height:28px;padding:0 10px;font-size:12px;border:0.5px solid var(--danger-border);border-radius:6px;background:var(--bg);color:var(--danger-text);cursor:pointer;}
+  .del-btn:hover{background:var(--danger-bg);}
+  .empty{text-align:center;padding:3rem;color:var(--text3);font-size:13px;}
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--text);border-radius:50%;animation:spin .6s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   /* MODAL */
-  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
-  .overlay.open { display: flex; }
-  .modal { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1.5rem; width: min(560px, 100%); max-height: 90vh; overflow-y: auto; }
-  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-  .modal-header h3 { font-size: 15px; font-weight: 600; }
-  .close-btn { width: 28px; height: 28px; border: none; background: none; cursor: pointer; color: var(--text2); font-size: 18px; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
-  .close-btn:hover { background: var(--bg2); }
-  .field { margin-bottom: 0.875rem; }
-  .field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px; font-weight: 500; }
-  .field input, .field textarea, .field select { width: 100%; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; outline: none; }
-  .field input:focus, .field textarea:focus, .field select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-  .field textarea { resize: vertical; min-height: 64px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .checks-section { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px; }
-  .checks-section .slabel { display: block; font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-  .checks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .check-field { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 4px 6px; border-radius: 6px; }
-  .check-field:hover { background: var(--bg2); }
-  .check-field input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: #3b82f6; }
-  .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.25rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+  .overlay.open{display:flex;}
+  .modal{background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--rl);padding:1.5rem;width:min(620px,100%);max-height:90vh;overflow-y:auto;}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+  .modal-header h3{font-size:15px;font-weight:600;}
+  .close-btn{width:28px;height:28px;border:none;background:none;cursor:pointer;color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+  .close-btn:hover{background:var(--bg2);}
+  .field{margin-bottom:.875rem;}
+  .field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500;}
+  .field input,.field textarea,.field select{width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+  .field textarea{resize:vertical;min-height:60px;}
+  .field input[type=number]{-moz-appearance:textfield;}
+  .field input[type=number]::-webkit-inner-spin-button{opacity:1;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  .checks-section{border:0.5px solid var(--border);border-radius:var(--r);padding:12px;}
+  .checks-section .slabel{display:block;font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+  .checks-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .check-field{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:4px 6px;border-radius:6px;}
+  .check-field:hover{background:var(--bg2);}
+  .check-field input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:#3b82f6;}
+  .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--border);}
+  .section-divider{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin:.5rem 0 .75rem;padding-bottom:6px;border-bottom:0.5px solid var(--border);}
 
-  .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: var(--radius); font-size: 13px; z-index: 300; opacity: 0; transform: translateY(8px); transition: opacity .2s, transform .2s; pointer-events: none; }
-  .toast.show { opacity: 1; transform: translateY(0); }
+  /* STATES INPUT */
+  .states-input-wrap{border:0.5px solid var(--border2);border-radius:var(--r);padding:8px 10px;min-height:42px;display:flex;flex-wrap:wrap;gap:4px;cursor:text;background:var(--bg);}
+  .states-input-wrap:focus-within{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+  .state-pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--purple-bg);color:var(--purple-text);border:0.5px solid var(--purple-border);}
+  .state-pill button{background:none;border:none;cursor:pointer;color:var(--purple-text);font-size:14px;line-height:1;padding:0;display:flex;align-items:center;}
+  .state-pill button:hover{color:var(--danger-text);}
+  .states-input-wrap input{border:none;outline:none;background:transparent;color:var(--text);font-size:13px;min-width:120px;flex:1;padding:0;}
 
-  @media (max-width: 600px) {
-    main { padding: 1rem; } header { padding: 0 1rem; }
-    .checks-grid, .form-row { grid-template-columns: 1fr; }
+  /* CSV UPLOAD */
+  .drop-zone{border:1.5px dashed var(--border2);border-radius:var(--r);padding:2rem;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:1rem;}
+  .drop-zone:hover,.drop-zone.drag{border-color:#3b82f6;background:var(--info-bg);}
+  .drop-zone p{font-size:13px;color:var(--text2);margin-top:.5rem;}
+  .drop-zone strong{font-size:14px;color:var(--text);}
+  #csvFileInput{display:none;}
+  .preview-wrap{max-height:220px;overflow-y:auto;border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:1rem;}
+  .preview-wrap table{min-width:100%;font-size:12px;}
+  .preview-wrap th{font-size:11px;padding:7px 10px;background:var(--bg2);border-bottom:0.5px solid var(--border);}
+  .preview-wrap td{padding:6px 10px;border-bottom:0.5px solid var(--border);}
+  .preview-wrap tr:last-child td{border-bottom:none;}
+  .upload-info{font-size:12px;color:var(--text2);margin-bottom:.75rem;padding:10px 12px;background:var(--bg2);border-radius:var(--r);}
+  .upload-info b{color:var(--text);}
+  .badge-skip{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;background:var(--warn-bg);color:var(--warn-text);border:0.5px solid var(--warn-border);}
+  .badge-new{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border);}
+  .template-hint{font-size:12px;color:var(--info-text);cursor:pointer;text-decoration:underline;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--text);color:var(--bg);padding:10px 16px;border-radius:var(--r);font-size:13px;z-index:300;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  @media(max-width:600px){
+    main{padding:1rem;} header{padding:0 1rem;}
+    .checks-grid,.form-row,.form-row3{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -174,7 +214,7 @@
   <div class="hdot loading" id="dot"></div>
   <span id="statusTxt">Connecting...</span>
   <div class="spacer"></div>
-  <button class="logout-btn" onclick="doLogout()">Sign out</button>
+  <button class="hbtn" onclick="doLogout()">Sign out</button>
 </header>
 
 <main>
@@ -183,56 +223,114 @@
   <div class="toolbar">
     <div class="search-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="search" placeholder="Search by name, users, manager..." oninput="render()">
+      <input type="text" id="search" placeholder="Search by name, users, state, responsibility..." oninput="render()">
     </div>
     <button class="btn" onclick="loadData()">&#8635; Refresh</button>
+    <button class="btn success" onclick="openUpload()">&#8679; Bulk Upload</button>
+    <div class="export-wrap">
+      <button class="btn" onclick="toggleExportMenu(event)">&#8681; Export &#9662;</button>
+      <div class="export-menu" id="exportMenu">
+        <div class="export-item" onclick="exportCSV();closeExportMenu()">Export as CSV</div>
+        <div class="export-item" onclick="exportXLSX();closeExportMenu()">Export as Excel</div>
+      </div>
+    </div>
     <button class="btn primary" onclick="openModal()">+ Add App</button>
   </div>
 
   <div class="filter-bar">
     <span class="filter-label">Filter:</span>
     <div class="chip sel" id="chip-all" onclick="setFilter('all')">All apps</div>
+    <div class="chip" id="chip-active" onclick="setFilter('active')">Active</div>
+    <div class="chip" id="chip-pilot" onclick="setFilter('pilot')">Pilot</div>
+    <div class="chip" id="chip-planned" onclick="setFilter('planned')">Planned</div>
     <div class="chip" id="chip-no2fa" onclick="setFilter('no2fa')">Missing 2FA</div>
     <div class="chip" id="chip-nosso" onclick="setFilter('nosso')">Missing SSO</div>
     <div class="chip" id="chip-noticket" onclick="setFilter('noticket')">No Ticket Support</div>
     <div class="chip" id="chip-nomanual" onclick="setFilter('nomanual')">No User Manual</div>
-    <div class="chip" id="chip-nofaq" onclick="setFilter('nofaq')">No FAQ</div>
-    <div class="chip" id="chip-review" onclick="setFilter('review')">Needs Review</div>
-    <div class="chip" id="chip-inactive" onclick="setFilter('inactive')">Inactive / Deprecated</div>
+    <div class="chip" id="chip-inactive" onclick="setFilter('inactive')">Inactive</div>
   </div>
 
   <div class="table-wrap">
     <table>
       <thead><tr>
-        <th class="col-no">#</th>
+        <th style="width:36px">#</th>
         <th onclick="sortBy('MIS Name')">MIS Name</th>
         <th>Description</th>
         <th>Users</th>
         <th>Managed By</th>
+        <th>Responsibility</th>
+        <th onclick="sortBy('Total Users')">Total Users</th>
+        <th onclick="sortBy('Total Individuals')">Total Individuals</th>
+        <th onclick="sortBy('Functional State')">Functional State</th>
         <th onclick="sortBy('Status')">Status</th>
+        <th>Operating States</th>
         <th onclick="sortBy('Go Live Date')">Go Live</th>
         <th onclick="sortBy('Last Reviewed')">Last Reviewed</th>
         <th>Ticket</th><th>2FA</th><th>SSO</th><th>Manual</th><th>Admin</th><th>FAQ</th>
-        <th></th>
+        <th style="width:90px"></th>
       </tr></thead>
-      <tbody id="tbody"><tr><td colspan="15" class="empty"><span class="spinner"></span></td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="20" class="empty"><span class="spinner"></span></td></tr></tbody>
     </table>
   </div>
 </main>
 </div>
 
-<!-- MODAL -->
+<!-- ADD/EDIT MODAL -->
 <div class="overlay" id="overlay">
   <div class="modal">
     <div class="modal-header">
       <h3 id="modalTitle">Add application</h3>
       <button class="close-btn" onclick="closeModal()">&#215;</button>
     </div>
+
+    <div class="section-divider">Basic Information</div>
     <div class="field"><label>MIS Name *</label><input id="fName" placeholder="e.g. Shishu Ghar - CMS"></div>
     <div class="field"><label>Description</label><textarea id="fDesc" placeholder="What does this app do?"></textarea></div>
-    <div class="field"><label>Users</label><input id="fUsers" placeholder="e.g. Creche Initiatives (#1500+ creches, 29k kids)"></div>
-    <div class="field"><label>Managed By</label><input id="fMgr" placeholder="e.g. Partner: Microware"></div>
     <div class="form-row">
+      <div class="field"><label>Users</label><input id="fUsers" placeholder="e.g. Creche Initiatives"></div>
+      <div class="field"><label>Managed By</label><input id="fMgr" placeholder="e.g. Partner: Microware"></div>
+    </div>
+    <div class="field">
+      <label>Responsibility</label>
+      <div style="display:flex;gap:8px">
+        <select id="fRespSelect" style="flex:1;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;outline:none;" onchange="syncResp()">
+          <option value="">— Select or type below —</option>
+          <option>Programme Team</option>
+          <option>Technology Team</option>
+          <option>M&E Team</option>
+          <option>Finance Team</option>
+          <option>Admin Team</option>
+          <option>Partner</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <input id="fResp" placeholder="Or type custom responsibility..." style="margin-top:6px;width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;outline:none;" oninput="clearRespSelect()">
+    </div>
+
+    <div class="section-divider">Scale & Reach</div>
+    <div class="form-row3">
+      <div class="field"><label>Total No. of Users</label><input type="number" id="fTotalUsers" placeholder="e.g. 5000" min="0"></div>
+      <div class="field"><label>Total No. of Individuals</label><input type="number" id="fTotalInd" placeholder="e.g. 29000" min="0"></div>
+      <div class="field">
+        <label>Functional State</label>
+        <select id="fFuncState">
+          <option value="">— Select —</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+          <option value="Pilot">Pilot</option>
+          <option value="Planned">Planned</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Operating States <span style="color:var(--text3);font-weight:400">(type state name + press Enter or comma)</span></label>
+      <div class="states-input-wrap" id="statesWrap" onclick="document.getElementById('stateInput').focus()">
+        <input id="stateInput" placeholder="Type a state and press Enter..." onkeydown="handleStateInput(event)" oninput="handleStateType(event)">
+      </div>
+    </div>
+
+    <div class="section-divider">Timeline & Status</div>
+    <div class="form-row3">
       <div class="field"><label>Status</label>
         <select id="fStatus">
           <option value="Active">Active</option>
@@ -242,11 +340,12 @@
         </select>
       </div>
       <div class="field"><label>Go Live Date</label><input type="date" id="fGoLive"></div>
+      <div class="field"><label>Last Reviewed</label><input type="date" id="fReviewed"></div>
     </div>
-    <div class="field"><label>Last Reviewed</label><input type="date" id="fReviewed"></div>
+
+    <div class="section-divider">Compliance & Features</div>
     <div class="field">
       <div class="checks-section">
-        <span class="slabel">Compliance & Features</span>
         <div class="checks-grid">
           <label class="check-field"><input type="checkbox" id="fTicket"> Ticket Support</label>
           <label class="check-field"><input type="checkbox" id="f2fa"> 2FA</label>
@@ -257,9 +356,41 @@
         </div>
       </div>
     </div>
+
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancel</button>
       <button class="btn primary" id="saveBtn" onclick="saveApp()">Save to Sheet</button>
+    </div>
+  </div>
+</div>
+
+<!-- CSV UPLOAD MODAL -->
+<div class="overlay" id="uploadOverlay">
+  <div class="modal" style="width:min(680px,100%)">
+    <div class="modal-header">
+      <h3>Bulk Upload via CSV</h3>
+      <button class="close-btn" onclick="closeUpload()">&#215;</button>
+    </div>
+    <div style="margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <p style="font-size:13px;color:var(--text2)">Duplicates (same MIS Name) will be skipped automatically.</p>
+      <span class="template-hint" onclick="downloadTemplate()">&#8681; Download template</span>
+    </div>
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('csvFileInput').click()"
+      ondragover="event.preventDefault();this.classList.add('drag')"
+      ondragleave="this.classList.remove('drag')"
+      ondrop="handleDrop(event)">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text3);margin:0 auto;display:block"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <strong>Click to browse or drag & drop your CSV</strong>
+      <p>Supports .csv files</p>
+    </div>
+    <input type="file" id="csvFileInput" accept=".csv" onchange="handleFileSelect(event)">
+    <div id="previewSection" style="display:none">
+      <div class="upload-info" id="uploadInfo"></div>
+      <div class="preview-wrap" id="previewWrap"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeUpload()">Cancel</button>
+      <button class="btn primary" id="uploadBtn" onclick="doUpload()" disabled>Upload to Sheet</button>
     </div>
   </div>
 </div>
@@ -268,11 +399,15 @@
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzM_EUgCpawJAL6tuH_NDrfXANKKd_HKYn9qTRs0u_z5hzy2bphFmv_TkbO5IKlGgTO/exec";
+const PASSWORD = "mis@2026";
 const BOOL_KEYS = ["Ticket Support","2FA","SSO","User Manual","User Admin","FAQ"];
-const PASSWORD = "mis@2026"; // Change this to your preferred password
+const ALL_COLS = ["MIS Name","Description","Users","Managed By","Responsibility","Total Users","Total Individuals","Functional State","Status","Operating States","Go Live Date","Last Reviewed","Ticket Support","2FA","SSO","User Manual","User Admin","FAQ"];
 
 let apps=[], editRow=null, activeFilter='all', sortKey=null, sortDir=1;
+let csvRows=[], csvNewRows=[];
+let selectedStates=[];
 
+/* ── AUTH ── */
 function doLogin(){
   if(document.getElementById('pwInput').value===PASSWORD){
     sessionStorage.setItem('mis_auth','1');
@@ -294,15 +429,84 @@ function doLogout(){
 if(sessionStorage.getItem('mis_auth')==='1'){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
-  window.addEventListener('load', loadData);
+  window.addEventListener('load',loadData);
 }
 
+/* ── UTILS ── */
 function setStatus(s,m){document.getElementById('dot').className='hdot '+s;document.getElementById('statusTxt').textContent=m;}
-function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500);}
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
 function isBool(v){return v===true||v==='TRUE'||v==='Yes'||v===1;}
 function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function fmtDate(v){if(!v||v==='')return '—';const d=new Date(v);if(isNaN(d))return esc(v);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function fmtNum(v){if(!v&&v!==0)return '—';const n=Number(v);if(isNaN(n))return esc(String(v));return n.toLocaleString('en-IN');}
 
+function statusBadge(s){
+  if(!s)return '<span class="muted">—</span>';
+  const cls=s==='Active'?'s-active':s==='Inactive'?'s-inactive':s==='Needs Review'?'s-review':'s-deprecated';
+  return `<span class="sbadge ${cls}">${esc(s)}</span>`;
+}
+function funcStateBadge(s){
+  if(!s)return '<span class="muted">—</span>';
+  const cls=s==='Active'?'fs-active':s==='Inactive'?'fs-inactive':s==='Pilot'?'fs-pilot':'fs-planned';
+  return `<span class="sbadge ${cls}">${esc(s)}</span>`;
+}
+function statesBadges(v){
+  if(!v)return '<span class="muted">—</span>';
+  const states=String(v).split(',').map(s=>s.trim()).filter(Boolean);
+  if(!states.length)return '<span class="muted">—</span>';
+  return `<div class="states-wrap">${states.map(s=>`<span class="state-tag">${esc(s)}</span>`).join('')}</div>`;
+}
+
+/* ── STATES INPUT ── */
+function syncResp(){
+  const v=document.getElementById('fRespSelect').value;
+  if(v)document.getElementById('fResp').value=v;
+}
+function clearRespSelect(){document.getElementById('fRespSelect').value='';}
+
+function handleStateInput(e){
+  const inp=document.getElementById('stateInput');
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    addState(inp.value.replace(',','').trim());
+    inp.value='';
+  } else if(e.key==='Backspace'&&inp.value===''&&selectedStates.length){
+    selectedStates.pop();renderStatePills();
+  }
+}
+function handleStateType(e){
+  const v=document.getElementById('stateInput').value;
+  if(v.endsWith(',')){
+    addState(v.slice(0,-1).trim());
+    document.getElementById('stateInput').value='';
+  }
+}
+function addState(s){
+  if(!s)return;
+  const cap=s.charAt(0).toUpperCase()+s.slice(1);
+  if(!selectedStates.includes(cap))selectedStates.push(cap);
+  renderStatePills();
+}
+function removeState(i){selectedStates.splice(i,1);renderStatePills();}
+function renderStatePills(){
+  const wrap=document.getElementById('statesWrap');
+  const inp=document.getElementById('stateInput');
+  wrap.innerHTML='';
+  selectedStates.forEach((s,i)=>{
+    const pill=document.createElement('span');
+    pill.className='state-pill';
+    pill.innerHTML=`${esc(s)}<button type="button" onclick="removeState(${i})">&#215;</button>`;
+    wrap.appendChild(pill);
+  });
+  wrap.appendChild(inp);
+}
+function getStatesValue(){return selectedStates.join(', ');}
+function setStatesValue(v){
+  selectedStates=v?String(v).split(',').map(s=>s.trim()).filter(Boolean):[];
+  renderStatePills();
+}
+
+/* ── DATA ── */
 async function loadData(){
   setStatus('loading','Loading...');
   try{
@@ -312,7 +516,7 @@ async function loadData(){
     else setStatus('error','Sheet error');
   }catch(e){
     setStatus('error','Connection failed');
-    document.getElementById('tbody').innerHTML=`<tr><td colspan="15" class="empty">Could not connect to Google Sheet.</td></tr>`;
+    document.getElementById('tbody').innerHTML=`<tr><td colspan="20" class="empty">Could not connect to Google Sheet.</td></tr>`;
   }
 }
 async function apiPost(payload){
@@ -320,71 +524,79 @@ async function apiPost(payload){
   return await res.json();
 }
 
+/* ── FILTER & SORT ── */
 function setFilter(f){
   activeFilter=f;
   document.querySelectorAll('.chip').forEach(c=>c.className='chip');
   const el=document.getElementById('chip-'+f);
-  if(el) el.className=f==='all'?'chip sel':'chip active';
+  if(el)el.className=f==='all'?'chip sel':'chip active';
   render();
 }
-
 function applyFilter(list){
   switch(activeFilter){
+    case 'active':   return list.filter(a=>a['Functional State']==='Active');
+    case 'pilot':    return list.filter(a=>a['Functional State']==='Pilot');
+    case 'planned':  return list.filter(a=>a['Functional State']==='Planned');
+    case 'inactive': return list.filter(a=>a['Functional State']==='Inactive'||a['Status']==='Inactive');
     case 'no2fa':    return list.filter(a=>!isBool(a['2FA']));
     case 'nosso':    return list.filter(a=>!isBool(a['SSO']));
     case 'noticket': return list.filter(a=>!isBool(a['Ticket Support']));
     case 'nomanual': return list.filter(a=>!isBool(a['User Manual']));
-    case 'nofaq':    return list.filter(a=>!isBool(a['FAQ']));
-    case 'review':   return list.filter(a=>a['Status']==='Needs Review');
-    case 'inactive': return list.filter(a=>a['Status']==='Inactive'||a['Status']==='Deprecated');
     default: return list;
   }
 }
-
 function sortBy(k){
   if(sortKey===k)sortDir*=-1; else{sortKey=k;sortDir=1;}
   render();
 }
 
-function statusBadge(s){
-  if(!s)return '<span class="muted">—</span>';
-  const cls=s==='Active'?'s-active':s==='Inactive'?'s-inactive':s==='Needs Review'?'s-review':'s-deprecated';
-  return `<span class="sbadge ${cls}">${esc(s)}</span>`;
-}
-
+/* ── RENDER ── */
 function render(){
   const q=(document.getElementById('search').value||'').toLowerCase();
-  let list=apps.filter(a=>!q||[a['MIS Name'],a['Description'],a['Users'],a['Managed By'],a['Status']].some(v=>(v||'').toLowerCase().includes(q)));
+  let list=apps.filter(a=>!q||[a['MIS Name'],a['Description'],a['Users'],a['Managed By'],a['Responsibility'],a['Functional State'],a['Operating States'],a['Status']].some(v=>(v||'').toLowerCase().includes(q)));
   list=applyFilter(list);
-  if(sortKey) list=[...list].sort((a,b)=>{const av=(a[sortKey]||'').toString().toLowerCase(),bv=(b[sortKey]||'').toString().toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0;});
+  if(sortKey)list=[...list].sort((a,b)=>{
+    const av=(a[sortKey]||'').toString().toLowerCase(),bv=(b[sortKey]||'').toString().toLowerCase();
+    if(!isNaN(Number(av))&&!isNaN(Number(bv)))return(Number(av)-Number(bv))*sortDir;
+    return(av<bv?-1:av>bv?1:0)*sortDir;
+  });
 
   const total=apps.length;
+  const totalUsers=apps.reduce((s,a)=>s+(Number(a['Total Users'])||0),0);
+  const totalInd=apps.reduce((s,a)=>s+(Number(a['Total Individuals'])||0),0);
   const c2fa=apps.filter(a=>isBool(a['2FA'])).length;
   const csso=apps.filter(a=>isBool(a['SSO'])).length;
-  const ctkt=apps.filter(a=>isBool(a['Ticket Support'])).length;
-  const cman=apps.filter(a=>isBool(a['User Manual'])).length;
   const m2fa=total-c2fa, msso=total-csso;
+  const activeCnt=apps.filter(a=>a['Functional State']==='Active').length;
+  const pilotCnt=apps.filter(a=>a['Functional State']==='Pilot').length;
 
   document.getElementById('stats').innerHTML=`
     <div class="stat"><strong>${total}</strong> Total Apps</div>
+    <div class="stat"><strong>${activeCnt}</strong> Active</div>
+    <div class="stat"><strong>${pilotCnt}</strong> Pilot</div>
+    <div class="stat purple"><strong>${totalUsers.toLocaleString('en-IN')}</strong> Total Users</div>
+    <div class="stat purple"><strong>${totalInd.toLocaleString('en-IN')}</strong> Total Individuals</div>
     <div class="stat"><strong>${c2fa}/${total}</strong> 2FA Enabled</div>
     <div class="stat"><strong>${csso}/${total}</strong> SSO Enabled</div>
-    <div class="stat"><strong>${ctkt}/${total}</strong> Ticket Support</div>
-    <div class="stat"><strong>${cman}/${total}</strong> User Manual</div>
     ${m2fa>0?`<div class="stat danger"><strong>${m2fa}</strong> Missing 2FA</div>`:''}
     ${msso>0?`<div class="stat warn"><strong>${msso}</strong> Missing SSO</div>`:''}
   `;
 
-  if(!list.length){document.getElementById('tbody').innerHTML=`<tr><td colspan="15" class="empty">No apps match this filter</td></tr>`;return;}
+  if(!list.length){document.getElementById('tbody').innerHTML=`<tr><td colspan="20" class="empty">No apps match this filter</td></tr>`;return;}
 
   document.getElementById('tbody').innerHTML=list.map((a,i)=>`
   <tr>
-    <td class="col-no">${i+1}</td>
-    <td class="app-name">${esc(a['MIS Name'])||'—'}</td>
+    <td style="color:var(--text3);font-size:12px">${i+1}</td>
+    <td class="app-name" style="min-width:140px">${esc(a['MIS Name'])||'—'}</td>
     <td class="muted" style="max-width:160px">${esc(a['Description'])||'<span style="color:var(--text3)">—</span>'}</td>
-    <td class="muted" style="max-width:140px">${esc(a['Users'])||'<span style="color:var(--text3)">—</span>'}</td>
+    <td class="muted" style="max-width:130px">${esc(a['Users'])||'<span style="color:var(--text3)">—</span>'}</td>
     <td>${a['Managed By']?`<span class="tag" title="${esc(a['Managed By'])}">${esc(a['Managed By'])}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+    <td class="muted">${esc(a['Responsibility'])||'<span style="color:var(--text3)">—</span>'}</td>
+    <td class="num-cell" style="text-align:right">${fmtNum(a['Total Users'])}</td>
+    <td class="num-cell" style="text-align:right">${fmtNum(a['Total Individuals'])}</td>
+    <td>${funcStateBadge(a['Functional State'])}</td>
     <td>${statusBadge(a['Status'])}</td>
+    <td style="min-width:160px">${statesBadges(a['Operating States'])}</td>
     <td class="muted" style="white-space:nowrap">${fmtDate(a['Go Live Date'])}</td>
     <td class="muted" style="white-space:nowrap">${fmtDate(a['Last Reviewed'])}</td>
     ${BOOL_KEYS.map(k=>`<td><div class="toggle ${isBool(a[k])?'yes':'no'}" onclick="toggleBool(${a._row},'${k}',this)">${isBool(a[k])?'&#10003;':''}</div></td>`).join('')}
@@ -395,6 +607,7 @@ function render(){
   </tr>`).join('');
 }
 
+/* ── TOGGLE ── */
 async function toggleBool(rowNum,key,el){
   if(el.classList.contains('saving'))return;
   const a=apps.find(x=>x._row===rowNum);if(!a)return;
@@ -406,6 +619,7 @@ async function toggleBool(rowNum,key,el){
   }catch(e){a[key]=nv?'No':'Yes';el.classList.remove('saving');toast('Failed to update');}
 }
 
+/* ── MODAL ── */
 function openModal(rowNum){
   editRow=rowNum||null;
   const a=rowNum?apps.find(x=>x._row===rowNum):{};
@@ -415,6 +629,11 @@ function openModal(rowNum){
   document.getElementById('fDesc').value=a['Description']||'';
   document.getElementById('fUsers').value=a['Users']||'';
   document.getElementById('fMgr').value=a['Managed By']||'';
+  document.getElementById('fResp').value=a['Responsibility']||'';
+  document.getElementById('fRespSelect').value='';
+  document.getElementById('fTotalUsers').value=a['Total Users']||'';
+  document.getElementById('fTotalInd').value=a['Total Individuals']||'';
+  document.getElementById('fFuncState').value=a['Functional State']||'';
   document.getElementById('fStatus').value=a['Status']||'Active';
   document.getElementById('fGoLive').value=a['Go Live Date']||'';
   document.getElementById('fReviewed').value=a['Last Reviewed']||'';
@@ -424,23 +643,34 @@ function openModal(rowNum){
   document.getElementById('fManual').checked=isBool(a['User Manual']);
   document.getElementById('fAdmin').checked=isBool(a['User Admin']);
   document.getElementById('fFaq').checked=isBool(a['FAQ']);
+  setStatesValue(a['Operating States']||'');
   document.getElementById('overlay').classList.add('open');
   setTimeout(()=>document.getElementById('fName').focus(),50);
 }
-function closeModal(){document.getElementById('overlay').classList.remove('open');editRow=null;}
+function closeModal(){document.getElementById('overlay').classList.remove('open');editRow=null;selectedStates=[];}
 
 async function saveApp(){
   const name=document.getElementById('fName').value.trim();
   if(!name){document.getElementById('fName').style.borderColor='#ef4444';document.getElementById('fName').focus();return;}
   document.getElementById('fName').style.borderColor='';
   const btn=document.getElementById('saveBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  const resp=document.getElementById('fResp').value.trim()||document.getElementById('fRespSelect').value;
   const data={
-    'MIS Name':name,'Description':document.getElementById('fDesc').value.trim(),
-    'Users':document.getElementById('fUsers').value.trim(),'Managed By':document.getElementById('fMgr').value.trim(),
-    'Status':document.getElementById('fStatus').value,'Go Live Date':document.getElementById('fGoLive').value,
+    'MIS Name':name,
+    'Description':document.getElementById('fDesc').value.trim(),
+    'Users':document.getElementById('fUsers').value.trim(),
+    'Managed By':document.getElementById('fMgr').value.trim(),
+    'Responsibility':resp,
+    'Total Users':document.getElementById('fTotalUsers').value||'',
+    'Total Individuals':document.getElementById('fTotalInd').value||'',
+    'Functional State':document.getElementById('fFuncState').value,
+    'Status':document.getElementById('fStatus').value,
+    'Operating States':getStatesValue(),
+    'Go Live Date':document.getElementById('fGoLive').value,
     'Last Reviewed':document.getElementById('fReviewed').value,
     'Ticket Support':document.getElementById('fTicket').checked?'Yes':'No',
-    '2FA':document.getElementById('f2fa').checked?'Yes':'No','SSO':document.getElementById('fSso').checked?'Yes':'No',
+    '2FA':document.getElementById('f2fa').checked?'Yes':'No',
+    'SSO':document.getElementById('fSso').checked?'Yes':'No',
     'User Manual':document.getElementById('fManual').checked?'Yes':'No',
     'User Admin':document.getElementById('fAdmin').checked?'Yes':'No',
     'FAQ':document.getElementById('fFaq').checked?'Yes':'No',
@@ -458,10 +688,120 @@ async function deleteRow(rowNum,name){
   catch(e){toast('Delete failed.');}
 }
 
+/* ── EXPORT ── */
+function toggleExportMenu(e){e.stopPropagation();document.getElementById('exportMenu').classList.toggle('open');}
+function closeExportMenu(){document.getElementById('exportMenu').classList.remove('open');}
+document.addEventListener('click',closeExportMenu);
+function today(){return new Date().toISOString().slice(0,10);}
+function triggerDownload(blob,name){const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+
+function getExportData(){
+  const headers=['No',...ALL_COLS];
+  const rows=apps.map((a,i)=>[i+1,...ALL_COLS.map(k=>a[k]||'')]);
+  return{headers,rows};
+}
+function exportCSV(){
+  const{headers,rows}=getExportData();
+  const csv=[headers,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  triggerDownload(new Blob([csv],{type:'text/csv'}),'MIS_Linelist_'+today()+'.csv');
+  toast('CSV downloaded');
+}
+function exportXLSX(){
+  const{headers,rows}=getExportData();
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
+  ws['!cols']=[{wch:5},{wch:25},{wch:30},{wch:22},{wch:20},{wch:20},{wch:14},{wch:18},{wch:16},{wch:14},{wch:25},{wch:14},{wch:14},{wch:10},{wch:8},{wch:8},{wch:10},{wch:10},{wch:8}];
+  XLSX.utils.book_append_sheet(wb,ws,'MIS Linelist');
+  XLSX.writeFile(wb,'MIS_Linelist_'+today()+'.xlsx');
+  toast('Excel downloaded');
+}
+
+/* ── CSV UPLOAD ── */
+function openUpload(){
+  csvRows=[];csvNewRows=[];
+  document.getElementById('previewSection').style.display='none';
+  document.getElementById('uploadBtn').disabled=true;
+  document.getElementById('csvFileInput').value='';
+  document.getElementById('uploadOverlay').classList.add('open');
+}
+function closeUpload(){document.getElementById('uploadOverlay').classList.remove('open');}
+function handleDrop(e){
+  e.preventDefault();document.getElementById('dropZone').classList.remove('drag');
+  const file=e.dataTransfer.files[0];
+  if(file&&file.name.endsWith('.csv'))parseCSV(file); else toast('Please drop a .csv file');
+}
+function handleFileSelect(e){const file=e.target.files[0];if(file)parseCSV(file);}
+
+function parseCSV(file){
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const lines=e.target.result.trim().split('\n').map(l=>l.split(',').map(v=>v.trim().replace(/^"|"$/g,'').replace(/""/g,'"')));
+    if(lines.length<2){toast('CSV is empty or invalid');return;}
+    const headers=lines[0];
+    const nameIdx=headers.findIndex(h=>h.toLowerCase().includes('mis name')||h.toLowerCase()==='name');
+    if(nameIdx===-1){toast('CSV must have a "MIS Name" column');return;}
+    const existingNames=new Set(apps.map(a=>(a['MIS Name']||'').toLowerCase().trim()));
+    csvRows=lines.slice(1).filter(r=>r.some(c=>c)).map(r=>{const obj={};headers.forEach((h,i)=>obj[h]=r[i]||'');return obj;});
+    csvNewRows=csvRows.filter(r=>r['MIS Name']&&!existingNames.has(r['MIS Name'].toLowerCase().trim()));
+    const skipped=csvRows.length-csvNewRows.length;
+    const previewCols=['MIS Name','Responsibility','Functional State','Operating States','Total Users'];
+    let html=`<table><thead><tr><th>Status</th>${previewCols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    csvRows.forEach(r=>{
+      const isNew=!existingNames.has((r['MIS Name']||'').toLowerCase().trim());
+      html+=`<tr><td>${isNew?'<span class="badge-new">New</span>':'<span class="badge-skip">Skip</span>'}</td>`;
+      html+=previewCols.map(c=>`<td>${esc(r[c]||'')}</td>`).join('');
+      html+='</tr>';
+    });
+    html+='</tbody></table>';
+    document.getElementById('previewWrap').innerHTML=html;
+    document.getElementById('uploadInfo').innerHTML=`Found <b>${csvRows.length}</b> rows &nbsp;·&nbsp; <b style="color:var(--success-text)">${csvNewRows.length} new</b> will be added &nbsp;·&nbsp; <b style="color:var(--warn-text)">${skipped} duplicate${skipped!==1?'s':''}</b> will be skipped`;
+    document.getElementById('previewSection').style.display='block';
+    document.getElementById('uploadBtn').disabled=csvNewRows.length===0;
+    if(csvNewRows.length===0)toast('All entries already exist — nothing to upload');
+  };
+  reader.readAsText(file);
+}
+
+async function doUpload(){
+  if(!csvNewRows.length)return;
+  const btn=document.getElementById('uploadBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Uploading...';
+  let success=0,failed=0;
+  for(const row of csvNewRows){
+    const data={
+      'MIS Name':row['MIS Name']||'','Description':row['Description']||'',
+      'Users':row['Users']||'','Managed By':row['Managed By']||'',
+      'Responsibility':row['Responsibility']||'',
+      'Total Users':row['Total Users']||'','Total Individuals':row['Total Individuals']||'',
+      'Functional State':row['Functional State']||'','Status':row['Status']||'Active',
+      'Operating States':row['Operating States']||'',
+      'Go Live Date':row['Go Live Date']||'','Last Reviewed':row['Last Reviewed']||'',
+      'Ticket Support':normalBool(row['Ticket Support']),'2FA':normalBool(row['2FA']),
+      'SSO':normalBool(row['SSO']),'User Manual':normalBool(row['User Manual']),
+      'User Admin':normalBool(row['User Admin']),'FAQ':normalBool(row['FAQ']),
+    };
+    try{await apiPost({action:'add',data});success++;}catch(e){failed++;}
+  }
+  btn.disabled=false;btn.textContent='Upload to Sheet';
+  closeUpload();await loadData();
+  toast(`✓ ${success} apps uploaded${failed>0?`, ${failed} failed`:''}`);
+}
+function normalBool(v){if(!v)return 'No';const s=String(v).toLowerCase().trim();return(s==='yes'||s==='true'||s==='1'||s==='y')?'Yes':'No';}
+
+function downloadTemplate(){
+  const headers=ALL_COLS;
+  const sample=[['Shishu Ghar - CMS','Tracks creche operations','Creche Initiatives','Partner: Microware','Programme Team','500','29000','Active','Active','Odisha, Bihar, Jharkhand','2023-01-15','2024-06-01','Yes','No','No','Yes','Yes','No']];
+  const csv=[headers,...sample].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  triggerDownload(new Blob([csv],{type:'text/csv'}),'MIS_Tracker_Template.csv');
+  toast('Template downloaded');
+}
+
+/* ── KEYBOARD ── */
 document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('uploadOverlay').addEventListener('click',function(e){if(e.target===this)closeUpload();});
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')closeModal();
-  if(e.key==='Enter'&&document.getElementById('overlay').classList.contains('open')&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){e.preventDefault();saveApp();}
+  if(e.key==='Escape'){closeModal();closeUpload();}
+  if(e.key==='Enter'&&document.getElementById('overlay').classList.contains('open')&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'&&e.target.id!=='stateInput'){e.preventDefault();saveApp();}
 });
 </script>
 </body>
