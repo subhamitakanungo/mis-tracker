@@ -261,7 +261,7 @@
         <th>Responsibility</th>
         <th onclick="sortBy('Total Users')">Total Users</th>
         <th onclick="sortBy('Total Individuals')">Total Individuals</th>
-        <th onclick="sortBy('Functional State')">Functional State</th>
+        <th onclick="sortBy('Functional Status')">Functional Status</th>
         <th onclick="sortBy('Status')">Status</th>
         <th>Operating States</th>
         <th onclick="sortBy('Go Live Date')">Go Live</th>
@@ -312,7 +312,7 @@
       <div class="field"><label>Total No. of Users</label><input type="number" id="fTotalUsers" placeholder="e.g. 5000" min="0"></div>
       <div class="field"><label>Total No. of Individuals</label><input type="number" id="fTotalInd" placeholder="e.g. 29000" min="0"></div>
       <div class="field">
-        <label>Functional State</label>
+        <label>Functional Status</label>
         <select id="fFuncState">
           <option value="">— Select —</option>
           <option value="Active">Active</option>
@@ -401,7 +401,7 @@
 const API = "https://script.google.com/macros/s/AKfycbzM_EUgCpawJAL6tuH_NDrfXANKKd_HKYn9qTRs0u_z5hzy2bphFmv_TkbO5IKlGgTO/exec";
 const PASSWORD = "mis@2026";
 const BOOL_KEYS = ["Ticket Support","2FA","SSO","User Manual","User Admin","FAQ"];
-const ALL_COLS = ["MIS Name","Description","Users","Managed By","Responsibility","Total Users","Total Individuals","Functional State","Status","Operating States","Go Live Date","Last Reviewed","Ticket Support","2FA","SSO","User Manual","User Admin","FAQ"];
+const ALL_COLS = ["MIS Name","Description","Users","Managed By","Responsibility","Total Users","Total Individuals","Functional Status","Status","Operating States","Go Live Date","Last Reviewed","Ticket Support","2FA","SSO","User Manual","User Admin","FAQ"];
 
 let apps=[], editRow=null, activeFilter='all', sortKey=null, sortDir=1;
 let csvRows=[], csvNewRows=[];
@@ -534,10 +534,10 @@ function setFilter(f){
 }
 function applyFilter(list){
   switch(activeFilter){
-    case 'active':   return list.filter(a=>a['Functional State']==='Active');
-    case 'pilot':    return list.filter(a=>a['Functional State']==='Pilot');
-    case 'planned':  return list.filter(a=>a['Functional State']==='Planned');
-    case 'inactive': return list.filter(a=>a['Functional State']==='Inactive'||a['Status']==='Inactive');
+    case 'active':   return list.filter(a=>a['Functional Status']==='Active');
+    case 'pilot':    return list.filter(a=>a['Functional Status']==='Pilot');
+    case 'planned':  return list.filter(a=>a['Functional Status']==='Planned');
+    case 'inactive': return list.filter(a=>a['Functional Status']==='Inactive'||a['Status']==='Inactive');
     case 'no2fa':    return list.filter(a=>!isBool(a['2FA']));
     case 'nosso':    return list.filter(a=>!isBool(a['SSO']));
     case 'noticket': return list.filter(a=>!isBool(a['Ticket Support']));
@@ -553,7 +553,7 @@ function sortBy(k){
 /* ── RENDER ── */
 function render(){
   const q=(document.getElementById('search').value||'').toLowerCase();
-  let list=apps.filter(a=>!q||[a['MIS Name'],a['Description'],a['Users'],a['Managed By'],a['Responsibility'],a['Functional State'],a['Operating States'],a['Status']].some(v=>(v||'').toLowerCase().includes(q)));
+  let list=apps.filter(a=>!q||[a['MIS Name'],a['Description'],a['Users'],a['Managed By'],a['Responsibility'],a['Functional Status'],a['Operating States'],a['Status']].some(v=>(v||'').toLowerCase().includes(q)));
   list=applyFilter(list);
   if(sortKey)list=[...list].sort((a,b)=>{
     const av=(a[sortKey]||'').toString().toLowerCase(),bv=(b[sortKey]||'').toString().toLowerCase();
@@ -567,8 +567,8 @@ function render(){
   const c2fa=apps.filter(a=>isBool(a['2FA'])).length;
   const csso=apps.filter(a=>isBool(a['SSO'])).length;
   const m2fa=total-c2fa, msso=total-csso;
-  const activeCnt=apps.filter(a=>a['Functional State']==='Active').length;
-  const pilotCnt=apps.filter(a=>a['Functional State']==='Pilot').length;
+  const activeCnt=apps.filter(a=>a['Functional Status']==='Active').length;
+  const pilotCnt=apps.filter(a=>a['Functional Status']==='Pilot').length;
 
   document.getElementById('stats').innerHTML=`
     <div class="stat"><strong>${total}</strong> Total Apps</div>
@@ -594,7 +594,7 @@ function render(){
     <td class="muted">${esc(a['Responsibility'])||'<span style="color:var(--text3)">—</span>'}</td>
     <td class="num-cell" style="text-align:right">${fmtNum(a['Total Users'])}</td>
     <td class="num-cell" style="text-align:right">${fmtNum(a['Total Individuals'])}</td>
-    <td>${funcStateBadge(a['Functional State'])}</td>
+    <td>${funcStateBadge(a['Functional Status'])}</td>
     <td>${statusBadge(a['Status'])}</td>
     <td style="min-width:160px">${statesBadges(a['Operating States'])}</td>
     <td class="muted" style="white-space:nowrap">${fmtDate(a['Go Live Date'])}</td>
@@ -633,7 +633,7 @@ function openModal(rowNum){
   document.getElementById('fRespSelect').value='';
   document.getElementById('fTotalUsers').value=a['Total Users']||'';
   document.getElementById('fTotalInd').value=a['Total Individuals']||'';
-  document.getElementById('fFuncState').value=a['Functional State']||'';
+  document.getElementById('fFuncState').value=a['Functional Status']||'';
   document.getElementById('fStatus').value=a['Status']||'Active';
   document.getElementById('fGoLive').value=a['Go Live Date']||'';
   document.getElementById('fReviewed').value=a['Last Reviewed']||'';
@@ -663,7 +663,7 @@ async function saveApp(){
     'Responsibility':resp,
     'Total Users':document.getElementById('fTotalUsers').value||'',
     'Total Individuals':document.getElementById('fTotalInd').value||'',
-    'Functional State':document.getElementById('fFuncState').value,
+    'Functional Status':document.getElementById('fFuncState').value,
     'Status':document.getElementById('fStatus').value,
     'Operating States':getStatesValue(),
     'Go Live Date':document.getElementById('fGoLive').value,
@@ -744,7 +744,7 @@ function parseCSV(file){
     csvRows=lines.slice(1).filter(r=>r.some(c=>c)).map(r=>{const obj={};headers.forEach((h,i)=>obj[h]=r[i]||'');return obj;});
     csvNewRows=csvRows.filter(r=>r['MIS Name']&&!existingNames.has(r['MIS Name'].toLowerCase().trim()));
     const skipped=csvRows.length-csvNewRows.length;
-    const previewCols=['MIS Name','Responsibility','Functional State','Operating States','Total Users'];
+    const previewCols=['MIS Name','Responsibility','Functional Status','Operating States','Total Users'];
     let html=`<table><thead><tr><th>Status</th>${previewCols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
     csvRows.forEach(r=>{
       const isNew=!existingNames.has((r['MIS Name']||'').toLowerCase().trim());
@@ -773,7 +773,7 @@ async function doUpload(){
       'Users':row['Users']||'','Managed By':row['Managed By']||'',
       'Responsibility':row['Responsibility']||'',
       'Total Users':row['Total Users']||'','Total Individuals':row['Total Individuals']||'',
-      'Functional State':row['Functional State']||'','Status':row['Status']||'Active',
+      'Functional Status':row['Functional Status']||'','Status':row['Status']||'Active',
       'Operating States':row['Operating States']||'',
       'Go Live Date':row['Go Live Date']||'','Last Reviewed':row['Last Reviewed']||'',
       'Ticket Support':normalBool(row['Ticket Support']),'2FA':normalBool(row['2FA']),
